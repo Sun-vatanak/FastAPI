@@ -39,14 +39,14 @@ def read_user(* ,user_id:int, test:int ,name: Optional[str]=None):
     for item_id in data:
         if data[item_id]["name"] == name:
             return data[item_id]
-        return {"message": "User not found te ha "}
+        raise HTTPException(status_code=400,detail="get data not found")
 # Crate 
 @app.get("/users-get-by-name/")
 def get_user_by_name(name: str = Query(..., description="Name to search for")):
     for user_id, item in data.items():
         if item.name == name:
             return item
-    return {"message": "User not found"}
+    raise HTTPException(status_code=404, detail="User not found")
 @app.post("/users-create/{user_id}")
 def create_user(user_id:int,item:Item):
     if user_id in data:
@@ -59,7 +59,7 @@ def create_user(user_id:int,item:Item):
 @app.put("/users-update/{user_id}")
 def update_user(user_id: int, item:UpdateItem):
     if user_id not in data:
-        return {"message": "User not found"}
+        raise HTTPException(status_code=404, detail="User update not found")
     # update data
     # data[user_id] = item
     if item.name !=None:
@@ -76,7 +76,7 @@ def update_user(user_id: int, item:UpdateItem):
 @app.delete("/user-delete")
 def delete_user(user_id: int=Query(...,description="input your id you wnat delete ")):
     if user_id not in data:
-        return {"message": "User not found"}
+        raise HTTPException(status_code=404, detail="User delete not found")
     # delete data
     del data[user_id]
     return {"message": "User deleted successfully"}
